@@ -44,13 +44,18 @@ int main(int argc, char* argv[])
 	printBuffer(buffer);
 
 	int count = 0;
-
-	for (char *ptr = buffer, int i = 0; *ptr != '\0'; ptr = &buffer[i++]) {
+	char *ptr = buffer;
+	for (int i = 0; *ptr != '\0'; ptr = &buffer[i++]) {
 		vector<int>::iterator it = find(lotto.begin(), lotto.end(), *ptr);
 		if (it != lotto.end()) {
 
 		}
+		else {
+			count++;
+		}
 	}
+	
+	cout << "You got " << count << "correct" << endl;
 	return 0;
 }
 
