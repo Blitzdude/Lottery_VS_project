@@ -11,15 +11,20 @@
 /*
 Tee lotto - ohjelma, joka arpoo 7 satunnaislukua v‰lilt‰ 1 - 39 (rand() % 39 + 1) ja lis‰‰ ne vektoriin.
 Ohjelma kyselee k‰ytt‰j‰lt‰ lottorivej‰ ja kertoo, montako meni oikein.
+
+muutetaan siten, ett‰ ei oteta k‰ytt‰jlt‰ arvoja, vaan generoidaan randomisti tuhat "arpalippua" ja katsotaan, montako menee oikein. 
 */
 using namespace std;
 
 // Function prototypes
 void initLottery(vector<int> &vec);
-void printBuffer(char buffer[]);
-void printInt(int i);
+int checkLotteryNumbers(vector<int>& vec1, vector<int>& vec2);
+//void printBuffer(char buffer[]);
+
 
 const int BUF_SIZE = 15;
+
+
 
 int main(int argc, char* argv[]) 
 {
@@ -28,44 +33,18 @@ int main(int argc, char* argv[])
 	srand(time(&t));	// alustetaan aika 
 
 	vector<int> lotto; 
-	initLottery(lotto);
-
+	vector<int> arpa;
 	// t‰ytet‰‰n vektori sattumanvaraisilla numeroilla 1-39
+	initLottery(lotto);
+	initLottery(arpa);
 
 	// Tulsotetaan vectori testausta varten
-	for_each(lotto.begin(), lotto.end(), printInt);
+	for_each(lotto.begin(), lotto.end(), [](int i){ cout << i << " "; }); // algoritmi
 
-	cout << "\nAnna lotto rivi (max 7 nro)" << endl;
+	cout << "\nYour ticket: " << endl;
+	for_each(arpa.begin(), arpa.end(), [](int i){ cout << i << " "; });
 
-
-	//array<char, BUF_SIZE> buffer = { '\0' };
-	char buffer[BUF_SIZE] = { '\0' };
-	cin.getline(buffer, BUF_SIZE, '\n'); // kysyt‰‰n k‰ytt‰j‰lt‰ lottorivi
-	cout << "\n";
-
-	// laitetaan bufferin numerot guess tauluun, jonka koko on 7
-	int guess[7];
-	char *ptr = buffer;	// declaration;
-	for (int i = 0; i < 7; /*|*/) {
-		if ((*ptr) != ' ') {
-			guess[i] = *ptr;
-			i++; ptr++;
-		}
-		else {
-			ptr++;
-		}
-	}
-
-	int count = 0;
-	ptr = buffer;
-	for (int i = 0; *ptr != '\0'; ptr = &buffer[i++]) {
-		vector<int>::iterator it = find(lotto.begin(), lotto.end(), *ptr);
-		if (it == lotto.end()) {
-		}
-		else {
-			count++;
-		}
-	}
+	int count = checkLotteryNumbers(lotto, arpa);
 	
 	cout << "You got " << count << " correct" << endl;
 	return 0;
@@ -88,8 +67,24 @@ void initLottery(vector<int> &vec) {
 			++i;
 		}
 	}
+	sort(vec.begin(), vec.end());
 }
 
+int checkLotteryNumbers(vector<int>& vec1, vector<int>& vec2) {
+	int count = 0;
+	// k‰yd‰‰n jokainen arvo l‰pi, ja katsotaan montako saatiin oikein. 
+	vector<int>::iterator it1;
+	vector<int>::iterator it2;
+	for (it1 = vec1.begin(); it1 != vec1.end(); ++it1) {
+		it2 = find(vec2.begin(), vec2.end(), *it1);
+		if (it2 != vec2.end()) {
+			count++;
+		}
+	}
+	return count;
+}
+
+/*
 void printBuffer(char buffer[]) {	//TODO: Replace with template,
 	for (int i = 0; i < BUF_SIZE; ++i)
 	{
@@ -102,15 +97,5 @@ void printBuffer(char buffer[]) {	//TODO: Replace with template,
 			break;
 		}
 	}
-
 }
-
-void printInt(int i) {
-	cout << i << " ";
-}
-	// char guess;	// laitetaan bufferin sis‰ltˆ ilman v‰lej‰ arvaukseen. 
-
-	
-
-
-
+*/
